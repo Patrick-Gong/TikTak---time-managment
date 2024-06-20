@@ -2,13 +2,16 @@ import styled from 'styled-components';
 // import Calendar from '../Main/Calendar';
 import ToDoForm from '../Main/ToDoForm';
 import ToDoList from '../Main/ToDoList';
+import Calendar from './Calendar';
 
 function ToDoMain() {
   return (
     <StyledMain>
       <div className="main-container">
         <div className="main-container_header">
-          <div className="calendar-box"></div>
+          <div className="calendar-box">
+            <Calendar />
+          </div>
           <div className="todoForm-box">
             <ToDoForm />
           </div>
@@ -19,8 +22,8 @@ function ToDoMain() {
         </div>
         <div className="main-container_footer">
           <div className="todoList-box">
-            <div className='todoList-box-line'/>
-              <ToDoList />
+            <div className="todoList-box-line" />
+            <ToDoList />
           </div>
         </div>
       </div>

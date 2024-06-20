@@ -1,12 +1,25 @@
 import styled from 'styled-components';
 import TikTakCI from '../../assets/TikTakCi.png';
+import { useNavigate } from 'react-router-dom';
 
-function Login({onEnter, onSignUp}) {
+function Login() {
+
+  const navigate = useNavigate();
+
+  function handleLogin(event) {
+    event.preventDefault();
+    navigate('/main');
+  }
+
+  function handleGoToSinUp() {
+    navigate('/signUp');
+  }
+
   return (
     <StyledLogin>
       <div className="login-container">
         <img src={TikTakCI} alt="TIK_TAK" />
-        <form action="">
+        <form onSubmit={handleLogin}>
           <div className="input-box-container">
             <input
               className="input-box"
@@ -23,10 +36,14 @@ function Login({onEnter, onSignUp}) {
             />
           </div>
 
-          <button className="blue_button" onClick={onEnter}>LOG IN</button>
+          <button className="blue_button" type='submit'>
+            LOG IN
+          </button>
 
           <p className="form-actions">
-            <button className="row_button" onClick={onSignUp}>회원가입</button>
+            <button className="row_button" onClick={handleGoToSinUp}>
+              회원가입
+            </button>
             <button className="row_button">아이디 찾기</button>
           </p>
         </form>
@@ -127,7 +144,7 @@ const StyledLogin = styled.div`
   & .form-actions {
     display: flex;
     margin-top: 4.19rem;
-    width: 15.69rem;  
+    width: 15.69rem;
     justify-content: space-between;
   }
 
@@ -144,6 +161,6 @@ const StyledLogin = styled.div`
   }
 
   & .row_button:hover {
-    color: #5C5D8D;
+    color: #5c5d8d;
   }
 `;
