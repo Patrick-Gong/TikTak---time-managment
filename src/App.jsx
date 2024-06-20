@@ -1,28 +1,20 @@
+import { useContext } from 'react';
+
 import './reset.css';
-import GlobalStyles from '../GlobalStyles';
+import GlobalStyles from './GlobalStyles';
 import Login from './components/Landing/Login';
 import SignUp from './components/Landing/SignUp';
 import ToDoMain from './components/Main/ToDoMain';
-import { useState } from 'react';
+// import { UserProgressContextProvider } from './components/store/UserProgressContext';
+import UserProgressContext from './components/store/UserProgressContext';
+import { Outlet } from 'react-router-dom';
 
 function App() {
-  const [isEntered, setIsEntered] = useState(false);
-  const [toSignUp, setToSignUp] = useState(false);
-
-  function handleLogin() {
-    setIsEntered(true);
-  }
-
-  function handleSignUp() {
-    setToSignUp(true);
-  }
 
   return (
     <>
       <GlobalStyles />
-      {!isEntered && <Login onEnter={handleLogin} onSignUp={handleSignUp} />}
-      {toSignUp && !isEntered && <SignUp />}
-      {isEntered && <ToDoMain />}
+      <Outlet />
     </>
   );
 }
