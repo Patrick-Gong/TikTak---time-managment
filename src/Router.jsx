@@ -19,7 +19,7 @@ const router = createBrowserRouter([
         element: <SignUp />
       },
       {
-        path: '/main',
+        path: '/main/:userId',
         element: <ToDoMain />
       }
     ]

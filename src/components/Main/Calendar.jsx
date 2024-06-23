@@ -1,11 +1,16 @@
 import styled from 'styled-components';
-import { useState, useEffect } from 'react';
+import { useState, useContext } from 'react';
+import axios from 'axios';
+import UserIdContext from '../store/UserIdContext';
 
-function Calendar() {
+function Calendar({ onDateClick }) {
+  const { userId } = useContext(UserIdContext);
+
+  const BASE_URL = import.meta.env.BASE_URL;
+
   let currentDate = new Date();
 
   const [renderedDate, setRenderedDate] = useState(currentDate);
-  console.log(renderedDate);
 
   const renderedYear = renderedDate.getFullYear();
   const renderedMonth = renderedDate.getMonth();
@@ -33,7 +38,7 @@ function Calendar() {
   }
 
   const dates = prevDates.concat(thisDates, nextDates);
-
+  console.log(dates);
   const firstDateIndex = dates.indexOf(1);
   const lastDateIndex = dates.lastIndexOf(TLDate);
 
@@ -47,6 +52,27 @@ function Calendar() {
     setRenderedDate(
       new Date(renderedDate.getFullYear(), renderedDate.getMonth() + 1, 1)
     );
+  };
+
+  const handleDateClick = async (date) => {
+    const clickedDate = new Date(renderedYear, renderedMonth, date);
+    const month = clickedDate.getMonth();
+    const day = clickedDate.getDate();
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/todos/${userId}?month=${
+          month + 1
+        }&day=${day}`
+      );
+      console.log(response);
+      const data = {
+        date: clickedDate,
+        content: response.data,
+      };
+      onDateClick(data);
+    } catch (error) {
+      console.log('failed', error);
+    }
   };
 
   return (
@@ -73,7 +99,7 @@ function Calendar() {
       </StyledDays>
       <StyledDates>
         {dates.map((date, i) => (
-          <li key={i} className="date">
+          <li key={i} className="date" onClick={() => handleDateClick(date)}>
             <span
               className={`${
                 i >= firstDateIndex && i < lastDateIndex + 1 ? 'this' : 'other'
@@ -157,6 +183,13 @@ const StyledDates = styled.ul`
     font-weight: 600;
   }
 
+  & .this:hover {
+    background-color: #06c3ff;
+    border: none;
+    padding: 0.2rem 0.4rem;
+    border-radius: 1rem;
+  }
+
   & .other {
     color: gray;
     font-weight: 300;
@@ -166,7 +199,7 @@ const StyledDates = styled.ul`
     border: none;
     padding: 0.4rem;
     border-radius: 1rem;
-    background-color: #0c21c0;
+    background-color: #167e9d;
     color: white;
   }
 `;

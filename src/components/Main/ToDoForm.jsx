@@ -1,8 +1,15 @@
 import styled from 'styled-components';
 import clockImage from '../../assets/TikTak_clock.png';
 import addImage from '../../assets/TikTak_add.png';
+import { useRef } from 'react';
 
-function ToDoForm() {
+function ToDoForm({ onAdd }) {
+  const textarea = useRef();
+
+  function handleAdd() {
+    onAdd(textarea.current.value);
+  }
+
   return (
     <StyledForm>
       <div className="todoForm-container">
@@ -33,10 +40,13 @@ function ToDoForm() {
             name="todo"
             className="todo-input"
             placeholder="할 일을 추가해보세요!"
+            ref={textarea}
           />
         </div>
         <p className="modal-actions">
-          <button className="blue_button">추가하기</button>
+          <button className="blue_button" onClick={handleAdd}>
+            추가하기
+          </button>
           <button className="white_button">취소</button>
         </p>
       </div>

@@ -3,17 +3,39 @@ import styled from 'styled-components';
 import ToDoForm from '../Main/ToDoForm';
 import ToDoList from '../Main/ToDoList';
 import Calendar from './Calendar';
+import { useState } from 'react';
 
 function ToDoMain() {
+  const [selectedDateToDo, setSelectedDateToDo] = useState({date: new Date(), content: []});
+
+
+  function handleSelectedDate(data) {
+    setSelectedDateToDo(data)
+  }
+
+  async function handleAddToDos(value) {
+    setSelectedDateToDo((prevState) => ({...prevState, content: value}))
+    try {
+      const response = await axios.post('~/api/todos/{user_id}', selectedDateToDo);
+      if (response.status === 200) {
+        alert(`${response.user}님 입력완료됐습니다.`)
+      }
+    } catch (error) {
+      alert('todo 입력에 실패하셨습니다.');
+    }
+  } 
+
+  console.log(selectedDateToDo);
+
   return (
     <StyledMain>
       <div className="main-container">
         <div className="main-container_header">
           <div className="calendar-box">
-            <Calendar />
+            <Calendar onDateClick={handleSelectedDate}/>
           </div>
           <div className="todoForm-box">
-            <ToDoForm />
+            <ToDoForm onAdd={handleAddToDos}/>
           </div>
         </div>
         <div className="main-container_body">

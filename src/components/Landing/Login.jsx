@@ -1,17 +1,51 @@
 import styled from 'styled-components';
 import TikTakCI from '../../assets/TikTakCi.png';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useContext, useEffect, useRef, useState } from 'react';
+import UserIdContext from '../store/UserIdContext';
 
 function Login() {
+  const username = useRef('');
+  const password = useRef('');
+  const { checkUserId } = useContext(UserIdContext);
 
   const navigate = useNavigate();
 
+  const BASE_URL = import.meta.env.BASE_URL;
+
+  // useEffect(() => {}, []);
+
+  const postLogin = async (loginData) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/users/login`, loginData);
+      console.log(response);
+      const userId = response.data.user_id;
+      checkUserId(userId);
+      if (response.status === 200 && typeof user_id === 'number') {
+        navigate(`/main/${userId}`);
+        alert('로그인 성공!!');
+      } else {
+        alert('로그인에 실패했습니다. 다시 시도해주세요.');
+      }
+
+      console.log(response.data);
+    } catch (error) {
+      alert('로그인에 실패했습니다. 다시 시도해주세요');
+    }
+  };
+
   function handleLogin(event) {
     event.preventDefault();
-    navigate('/main');
+    const loginData = {
+      username: username.current.value,
+      password: password.current.value,
+    };
+    console.log(loginData);
+    postLogin(loginData);
   }
 
-  function handleGoToSinUp() {
+  function handleGoToSignUp() {
     navigate('/signUp');
   }
 
@@ -25,23 +59,27 @@ function Login() {
               className="input-box"
               type="text"
               id="id"
+              name="userName"
               placeholder="아이디를 입력해주세요."
+              ref={username}
             />
 
             <input
               className="input-box"
               type="password"
               id="password"
+              name="password"
               placeholder="비밀번호를 입력해주세요."
+              ref={password}
             />
           </div>
 
-          <button className="blue_button" type='submit'>
+          <button className="blue_button" type="submit">
             LOG IN
           </button>
 
           <p className="form-actions">
-            <button className="row_button" onClick={handleGoToSinUp}>
+            <button className="row_button" onClick={handleGoToSignUp}>
               회원가입
             </button>
             <button className="row_button">아이디 찾기</button>
