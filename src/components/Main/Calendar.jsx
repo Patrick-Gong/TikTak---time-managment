@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 import { useState, useContext } from 'react';
-import axios from 'axios';
 import UserIdContext from '../store/UserIdContext';
 
 function Calendar({ onDateClick }) {
   const { userId } = useContext(UserIdContext);
+  console.log('Current userId:', userId);
 
-  const BASE_URL = import.meta.env.BASE_URL;
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
 
   let currentDate = new Date();
 
@@ -54,25 +54,10 @@ function Calendar({ onDateClick }) {
     );
   };
 
-  const handleDateClick = async (date) => {
+
+  const handleDateClick = (date) => {
     const clickedDate = new Date(renderedYear, renderedMonth, date);
-    const month = clickedDate.getMonth();
-    const day = clickedDate.getDate();
-    try {
-      const response = await axios.get(
-        `${BASE_URL}/todos/${userId}?month=${
-          month + 1
-        }&day=${day}`
-      );
-      console.log(response);
-      const data = {
-        date: clickedDate,
-        content: response.data,
-      };
-      onDateClick(data);
-    } catch (error) {
-      console.log('failed', error);
-    }
+    onDateClick(clickedDate);
   };
 
   return (

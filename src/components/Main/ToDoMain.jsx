@@ -1,41 +1,66 @@
 import styled from 'styled-components';
-// import Calendar from '../Main/Calendar';
 import ToDoForm from '../Main/ToDoForm';
 import ToDoList from '../Main/ToDoList';
 import Calendar from './Calendar';
-import { useState } from 'react';
+import axios from 'axios';
+import { useState, useContext, useEffect } from 'react';
+import UserIdContext from '../store/UserIdContext';
 
 function ToDoMain() {
-  const [selectedDateToDo, setSelectedDateToDo] = useState({date: new Date(), content: []});
+  const { userId } = useContext(UserIdContext);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
+  // 선택된 날짜에 해당되는 객체의 id를 담는 state값 필요
+  // const [selectedToDoId, setSelectedToDoId] = useState(null);
 
+  console.log(selectedDate);
+
+  useEffect(() => {
+    getData();
+  }, [selectedDate]);
+
+  const getData = async () => {
+    const month = selectedDate.getMonth() + 1;
+    const day = selectedDate.getDate();
+
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/todos/${userId}?month=${month}&day=${day}`
+      );
+      console.log(response);
+    } catch (error) {
+      console.log(userId);
+    }
+  };
 
   function handleSelectedDate(data) {
-    setSelectedDateToDo(data)
+    setSelectedDate(data);
   }
 
-  async function handleAddToDos(value) {
-    setSelectedDateToDo((prevState) => ({...prevState, content: value}))
+  async function handleAddToDos(contentValue) {
     try {
-      const response = await axios.post('~/api/todos/{user_id}', selectedDateToDo);
+      const response = await axios.post(
+        `https://6a0fba09-e042-4985-8108-ce52aaeb7f46.mock.pstmn.io/todos/${userId}`,
+        { date: selectedDate, content: contentValue }
+      );
       if (response.status === 200) {
-        alert(`${response.user}님 입력완료됐습니다.`)
+        alert(`${response.user}님 입력완료됐습니다.`);
       }
     } catch (error) {
       alert('todo 입력에 실패하셨습니다.');
+      console.log({ date: selectedDate, content: contentValue });
     }
-  } 
-
-  console.log(selectedDateToDo);
+  }
 
   return (
     <StyledMain>
       <div className="main-container">
         <div className="main-container_header">
           <div className="calendar-box">
-            <Calendar onDateClick={handleSelectedDate}/>
+            <Calendar onDateClick={handleSelectedDate} />
           </div>
           <div className="todoForm-box">
-            <ToDoForm onAdd={handleAddToDos}/>
+            <ToDoForm onAdd={handleAddToDos} />
           </div>
         </div>
         <div className="main-container_body">

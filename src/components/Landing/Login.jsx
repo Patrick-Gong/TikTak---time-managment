@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import TikTakCI from '../../assets/TikTakCi.png';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useRef } from 'react';
 import UserIdContext from '../store/UserIdContext';
 
 function Login() {
@@ -12,17 +12,16 @@ function Login() {
 
   const navigate = useNavigate();
 
-  const BASE_URL = import.meta.env.BASE_URL;
-
-  // useEffect(() => {}, []);
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
 
   const postLogin = async (loginData) => {
     try {
-      const response = await axios.post(`${BASE_URL}/users/login`, loginData);
-      console.log(response);
+      const response = await axios.post(`${BASE_URL}/api/users/login`, loginData);
+      
       const userId = response.data.user_id;
+      console.log(userId);
       checkUserId(userId);
-      if (response.status === 200 && typeof user_id === 'number') {
+      if (response.status === 200 && typeof userId === 'number') {
         navigate(`/main/${userId}`);
         alert('로그인 성공!!');
       } else {

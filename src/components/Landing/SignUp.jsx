@@ -7,7 +7,7 @@ function SignUp() {
   const username = useRef('');
   const password = useRef('');
 
-  const BASE_URL = import.meta.env.BASE_URL;
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
 
   const navigate = useNavigate();
 
