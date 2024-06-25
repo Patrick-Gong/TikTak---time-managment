@@ -25,7 +25,7 @@ function ToDoMain() {
 
     try {
       const response = await axios.get(
-        `${BASE_URL}/todos/${userId}?month=${month}&day=${day}`
+        `${BASE_URL}/api/todos/${userId}?month=${month}&day=${day}`
       );
       console.log(response);
     } catch (error) {
@@ -40,7 +40,7 @@ function ToDoMain() {
   async function handleAddToDos(contentValue) {
     try {
       const response = await axios.post(
-        `https://6a0fba09-e042-4985-8108-ce52aaeb7f46.mock.pstmn.io/todos/${userId}`,
+        `${BASE_URL}/api/todos/${userId}`,
         { date: selectedDate, content: contentValue }
       );
       if (response.status === 200) {

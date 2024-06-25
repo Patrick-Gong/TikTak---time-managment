@@ -15,9 +15,13 @@ function Login() {
   const BASE_URL = import.meta.env.VITE_BASE_URL;
 
   const postLogin = async (loginData) => {
+    console.log(loginData);
     try {
-      const response = await axios.post(`${BASE_URL}/api/users/login`, loginData);
-      
+      const response = await axios.post(
+        `${BASE_URL}/api/users/login`,
+        loginData
+      );
+
       const userId = response.data.user_id;
       console.log(userId);
       checkUserId(userId);

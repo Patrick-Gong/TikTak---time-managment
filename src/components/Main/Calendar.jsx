@@ -182,7 +182,7 @@ const StyledDates = styled.ul`
 
   & .today {
     border: none;
-    padding: 0.4rem;
+    padding: 0.2rem 0.4rem;
     border-radius: 1rem;
     background-color: #167e9d;
     color: white;

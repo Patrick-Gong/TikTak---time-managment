@@ -13,7 +13,10 @@ function SignUp() {
 
   const postSignUp = async (signUpData) => {
     try {
-      const response = await axios.post(`${BASE_URL}/users/register`, signUpData);
+      const response = await axios.post(
+        `${BASE_URL}/api/users/register`,
+        signUpData
+      );
       if (response.status === 200) {
         navigate('/');
         alert(response.data.detail);

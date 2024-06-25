@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import ToDoItem from './ToDoItem';
 
-function ToDoList() {
+function ToDoList({data}) {
   return (
     <StyledList>
       <div className="list-container">
