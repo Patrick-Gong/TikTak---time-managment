@@ -4,17 +4,22 @@ import ToDoList from '../Main/ToDoList';
 import Calendar from './Calendar';
 import axios from 'axios';
 import { useState, useContext, useEffect } from 'react';
-import UserIdContext from '../store/UserIdContext';
+import UserIdContext from '../store/UserIdCtx';
+import SelectedDateContext from '../store/SelectedDateCtx';
 
 function ToDoMain() {
   const { userId } = useContext(UserIdContext);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const { selectedDate } = useContext(SelectedDateContext);
+  const [toDoData, setToDoData] = useState([]);
   const BASE_URL = import.meta.env.VITE_BASE_URL;
   // 선택된 날짜에 해당되는 객체의 id를 담는 state값 필요
   // const [selectedToDoId, setSelectedToDoId] = useState(null);
 
   console.log(selectedDate);
 
+
+  // data에 값이 추가되거나 변경되면 다시 그 값들을 조회해야함
+  // but, useEffect에 toDoData를 의존성으로 사용하면 무한 렌더링 발생
   useEffect(() => {
     getData();
   }, [selectedDate]);
@@ -27,40 +32,22 @@ function ToDoMain() {
       const response = await axios.get(
         `${BASE_URL}/api/todos/${userId}?month=${month}&day=${day}`
       );
+      setToDoData(response.data);
       console.log(response);
     } catch (error) {
-      console.log(userId);
+      console.log(error);
     }
   };
-
-  function handleSelectedDate(data) {
-    setSelectedDate(data);
-  }
-
-  async function handleAddToDos(contentValue) {
-    try {
-      const response = await axios.post(
-        `${BASE_URL}/api/todos/${userId}`,
-        { date: selectedDate, content: contentValue }
-      );
-      if (response.status === 200) {
-        alert(`${response.user}님 입력완료됐습니다.`);
-      }
-    } catch (error) {
-      alert('todo 입력에 실패하셨습니다.');
-      console.log({ date: selectedDate, content: contentValue });
-    }
-  }
 
   return (
     <StyledMain>
       <div className="main-container">
         <div className="main-container_header">
           <div className="calendar-box">
-            <Calendar onDateClick={handleSelectedDate} />
+            <Calendar />
           </div>
           <div className="todoForm-box">
-            <ToDoForm onAdd={handleAddToDos} />
+            <ToDoForm />
           </div>
         </div>
         <div className="main-container_body">
@@ -70,7 +57,7 @@ function ToDoMain() {
         <div className="main-container_footer">
           <div className="todoList-box">
             <div className="todoList-box-line" />
-            <ToDoList />
+            <ToDoList data={toDoData} />
           </div>
         </div>
       </div>

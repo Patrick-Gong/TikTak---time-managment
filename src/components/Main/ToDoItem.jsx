@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 
-function ToDoItem() {
+function ToDoItem({content, emoji}) {
   return (
     <StyledListItem>
       <StyledTimeSection>
         <p className="time">10:00 AM</p>~<p className="time">11:00 AM</p>
       </StyledTimeSection>
       <StyledContentSection>
-        <p className="content">문방구에서 지우개 사오기</p>
+        <p className="content">{content}</p>
       </StyledContentSection>
       <p className="button-container">
         <button className="blue_button">수정</button>

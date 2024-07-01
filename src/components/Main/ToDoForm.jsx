@@ -1,14 +1,29 @@
 import styled from 'styled-components';
 import clockImage from '../../assets/TikTak_clock.png';
 import addImage from '../../assets/TikTak_add.png';
-import { useRef } from 'react';
+import { useContext, useRef } from 'react';
+import SelectedDateContext from '../store/SelectedDateCtx';
+import UserIdContext from '../store/UserIdCtx';
 
-function ToDoForm({ onAdd }) {
-  
+function ToDoForm() {
+  const { userId } = useContext(UserIdContext);
+  const { selectedDate } = useContext(SelectedDateContext);
   const textarea = useRef();
 
-  function handleAdd() {
-    onAdd(textarea.current.value);
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+  async function handleAdd() {
+    try {
+      const response = await axios.post(`${BASE_URL}/api/todos/${userId}`, {
+        date: selectedDate,
+        content: textarea.current.value,
+      });
+      if (response.status === 200) {
+        alert(`${response.user}님 입력완료됐습니다.`);
+      }
+    } catch (error) {
+      alert('todo 입력에 실패하셨습니다.');
+    }
   }
 
   return (

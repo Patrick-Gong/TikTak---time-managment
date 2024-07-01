@@ -1,12 +1,28 @@
 import styled from 'styled-components';
 import ToDoItem from './ToDoItem';
+import SelectedDateContext from '../store/SelectedDateCtx';
+import { useContext } from 'react';
 
-function ToDoList({data}) {
+function ToDoList({ data }) {
+  const { selectedDate } = useContext(SelectedDateContext);
+
+  const toDosOnSelectedDate = data.filter((i) => {
+    const itemDate = new Date(i.date).toDateString();
+    return itemDate === selectedDate.toDateString();
+  });
+  console.log(toDosOnSelectedDate);
+
   return (
     <StyledList>
       <div className="list-container">
         <ul>
-          <ToDoItem/>
+          {toDosOnSelectedDate.map((toDos) => (
+            <ToDoItem
+              key={toDos.todo_id}
+              content={toDos.content}
+              emoji={toDos.emoji}
+            />
+          ))}
         </ul>
       </div>
     </StyledList>
@@ -24,9 +40,10 @@ const StyledList = styled.div`
     display: flex;
     flex-direction: column;
     width: 90%;
-  }`;
+  }
+`;
 
-  /* & li {
+/* & li {
     display: flex;
     align-items: center;
 
@@ -50,7 +67,7 @@ const StyledList = styled.div`
     width: 3.6rem;
     height: 2.3rem;
     /* flex-shrink: 박스 안의 콘텐츠의 크기를 설정, 값이 클수록 콘텐츠가 차지하는 공간 줄어듬 */
-    /* flex-shrink: 0;
+/* flex-shrink: 0;
     border-radius: 1.875rem;
     border: 6px solid #000;
     background: #06c3ff;
@@ -65,7 +82,7 @@ const StyledList = styled.div`
     line-height: normal;
   } */
 
-  /* & .white_button {
+/* & .white_button {
     width: 3.6rem;
     height: 2.3rem;
     flex-shrink: 0;
@@ -83,7 +100,7 @@ const StyledList = styled.div`
     line-height: normal;
   } */
 
-  /* & .white_button:hover {
+/* & .white_button:hover {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1),
       0 -4px 6px rgba(255, 255, 255, 0.1),
       inset 0 4px 6px rgba(0, 0, 0, 0.2),
@@ -100,7 +117,6 @@ const StyledList = styled.div`
     border-radius: 1.875rem;
     border: 6px solid #000;
   }  */
-
 
 // const StyledTimeSection = styled.div`
 //   width: 15rem;

@@ -3,7 +3,7 @@ import TikTakCI from '../../assets/TikTakCi.png';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useContext, useRef } from 'react';
-import UserIdContext from '../store/UserIdContext';
+import UserIdContext from '../store/UserIdCtx';
 
 function Login() {
   const username = useRef('');
@@ -23,7 +23,6 @@ function Login() {
       );
 
       const userId = response.data.user_id;
-      console.log(userId);
       checkUserId(userId);
       if (response.status === 200 && typeof userId === 'number') {
         navigate(`/main/${userId}`);

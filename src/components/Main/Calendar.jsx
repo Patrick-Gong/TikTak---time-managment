@@ -1,16 +1,17 @@
 import styled from 'styled-components';
 import { useState, useContext } from 'react';
-import UserIdContext from '../store/UserIdContext';
+import UserIdContext from '../store/UserIdCtx';
+import SelectedDateContext from '../store/SelectedDateCtx';
 
-function Calendar({ onDateClick }) {
+function Calendar() {
   const { userId } = useContext(UserIdContext);
+  const { selectDate } = useContext(SelectedDateContext);
   console.log('Current userId:', userId);
-
-  const BASE_URL = import.meta.env.VITE_BASE_URL;
 
   let currentDate = new Date();
 
   const [renderedDate, setRenderedDate] = useState(currentDate);
+  console.log(renderedDate.getMonth());
 
   const renderedYear = renderedDate.getFullYear();
   const renderedMonth = renderedDate.getMonth();
@@ -54,10 +55,10 @@ function Calendar({ onDateClick }) {
     );
   };
 
-
   const handleDateClick = (date) => {
     const clickedDate = new Date(renderedYear, renderedMonth, date);
-    onDateClick(clickedDate);
+    selectDate(clickedDate);
+    console.log(clickedDate);
   };
 
   return (
@@ -84,21 +85,18 @@ function Calendar({ onDateClick }) {
       </StyledDays>
       <StyledDates>
         {dates.map((date, i) => (
-          <li key={i} className="date" onClick={() => handleDateClick(date)}>
-            <span
-              className={`${
-                i >= firstDateIndex && i < lastDateIndex + 1 ? 'this' : 'other'
-              } 
-                ${
-                  renderedMonth === currentDate.getMonth() &&
-                  renderedYear === currentDate.getFullYear() &&
-                  date === currentDate.getDate()
-                    ? 'today'
-                    : ''
-                }`}
-            >
+          <li key={i} className={`date ${
+            i >= firstDateIndex && i < lastDateIndex + 1 ? 'this' : 'other'
+          } 
+            ${
+              i >= firstDateIndex &&
+              i < lastDateIndex + 1 &&
+              date === currentDate.getDate()
+                ? 'today'
+                : ''
+            }`} onClick={() => handleDateClick(date)}>
+
               {date}
-            </span>
           </li>
         ))}
       </StyledDates>
@@ -155,12 +153,19 @@ const StyledDays = styled.div`
 const StyledDates = styled.ul`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  row-gap: 0.6rem;
-  margin: 0.7rem 0;
+  row-gap: 0.2rem;
+  margin: 0.4rem 0;
   width: 100%;
 
   & .date {
     text-align: center;
+    border-radius: 1rem;
+    height: 1.8rem;
+    width: 1.8rem;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   & .this {

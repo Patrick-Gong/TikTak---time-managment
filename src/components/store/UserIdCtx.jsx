@@ -13,13 +13,13 @@ export function UserIdContextProvider({children}) {
     setUserId(id);
   }
 
-  const userIdCtx = {
+  const ctxValue = {
     userId,
     checkUserId,
   }
 
   return (
-    <UserIdContext.Provider value={userIdCtx}>
+    <UserIdContext.Provider value={ctxValue}>
       {children}
     </UserIdContext.Provider>
   )
