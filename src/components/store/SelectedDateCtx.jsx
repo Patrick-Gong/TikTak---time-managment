@@ -2,25 +2,24 @@ import { createContext, useState } from 'react';
 
 const SelectedDateContext = createContext({
   selectedDate: new Date(),
-  selectDate: (date) => {},
+  changeDate: (date) => {},
 });
 
 export function SelectedDateContextProvider({ children }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  function selectDate(date) {
-    setSelectedDate(date);
+  function changeDate(dateObj) {
+    console.log('Updating to', dateObj);
+    setSelectedDate(dateObj);
   }
 
   const ctxValue = {
     selectedDate,
-    selectDate,
+    changeDate,
   };
 
   return (
-    <SelectedDateContext.Provider value={ctxValue}>
-      {children}
-    </SelectedDateContext.Provider>
+    <SelectedDateContext.Provider value={ctxValue}>{children}</SelectedDateContext.Provider>
   );
 }
 

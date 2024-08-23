@@ -3,9 +3,9 @@ import { useState, useContext } from 'react';
 import UserIdContext from '../store/UserIdCtx';
 import SelectedDateContext from '../store/SelectedDateCtx';
 
-function Calendar() {
+function Calendar({setFormRendered}) {
   const { userId } = useContext(UserIdContext);
-  const { selectDate } = useContext(SelectedDateContext);
+  const { selectedDate, changeDate } = useContext(SelectedDateContext);
   console.log('Current userId:', userId);
 
   let currentDate = new Date();
@@ -57,8 +57,8 @@ function Calendar() {
 
   const handleDateClick = (date) => {
     const clickedDate = new Date(renderedYear, renderedMonth, date);
-    selectDate(clickedDate);
-    console.log(clickedDate);
+    changeDate(clickedDate);
+    setFormRendered(true);
   };
 
   return (
@@ -85,18 +85,22 @@ function Calendar() {
       </StyledDays>
       <StyledDates>
         {dates.map((date, i) => (
-          <li key={i} className={`date ${
-            i >= firstDateIndex && i < lastDateIndex + 1 ? 'this' : 'other'
-          } 
+          <li
+            key={i}
+            className={`date ${
+              i >= firstDateIndex && i < lastDateIndex + 1 ? 'this' : 'other'
+            } 
             ${
               i >= firstDateIndex &&
               i < lastDateIndex + 1 &&
-              date === currentDate.getDate()
+              date === currentDate.getDate() &&
+              renderedMonth === currentDate.getMonth()
                 ? 'today'
                 : ''
-            }`} onClick={() => handleDateClick(date)}>
-
-              {date}
+            }`}
+            onClick={() => handleDateClick(date)}
+          >
+            {date}
           </li>
         ))}
       </StyledDates>
@@ -176,8 +180,7 @@ const StyledDates = styled.ul`
   & .this:hover {
     background-color: #06c3ff;
     border: none;
-    padding: 0.2rem 0.4rem;
-    border-radius: 1rem;
+    border-radius: 20px;
   }
 
   & .other {
@@ -187,10 +190,13 @@ const StyledDates = styled.ul`
 
   & .today {
     border: none;
-    padding: 0.2rem 0.4rem;
-    border-radius: 1rem;
+    border-radius: 20px;
     background-color: #167e9d;
     color: white;
+  }
+
+  & .today:hover {
+    color: black;
   }
 `;
 

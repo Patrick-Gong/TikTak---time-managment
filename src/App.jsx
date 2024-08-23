@@ -5,14 +5,20 @@ import GlobalStyles from './GlobalStyles';
 import { UserIdContextProvider } from './components/store/UserIdCtx';
 import { Outlet } from 'react-router-dom';
 import { SelectedDateContextProvider } from './components/store/SelectedDateCtx';
+import { ToDoIdContextProvider } from './components/store/ToDoIdCtx';
+import { ToDoDataContextProvider } from './components/store/ToDoDataCtx';
 
 function App() {
   return (
     <>
       <UserIdContextProvider>
         <SelectedDateContextProvider>
-          <GlobalStyles />
-          <Outlet />
+          <ToDoIdContextProvider>
+            <ToDoDataContextProvider>
+              <GlobalStyles />
+              <Outlet />
+            </ToDoDataContextProvider>
+          </ToDoIdContextProvider>
         </SelectedDateContextProvider>
       </UserIdContextProvider>
     </>

@@ -19,12 +19,14 @@ const router = createBrowserRouter([
         element: <SignUp />
       },
       {
-        path: '/main/:userId',
+        path: '/main',
         element: <ToDoMain />
       }
     ]
   }
 ]);
+
+// userId를 추가해야함
 
 export default function AppRouter() {
   return <RouterProvider router={router} />;

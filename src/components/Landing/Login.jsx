@@ -81,10 +81,10 @@ function Login() {
           </button>
 
           <p className="form-actions">
-            <button className="row_button" onClick={handleGoToSignUp}>
+            <button className="row_button" type='button' onClick={handleGoToSignUp}>
               회원가입
             </button>
-            <button className="row_button">아이디 찾기</button>
+            <button className="row_button" type='button'>아이디 찾기</button>
           </p>
         </form>
       </div>

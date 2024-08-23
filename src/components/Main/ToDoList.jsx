@@ -1,26 +1,42 @@
 import styled from 'styled-components';
 import ToDoItem from './ToDoItem';
 import SelectedDateContext from '../store/SelectedDateCtx';
+import ToDoDataContext from '../store/ToDoDataCtx';
 import { useContext } from 'react';
 
-function ToDoList({ data }) {
+function ToDoList({ onGoToForm }) {
   const { selectedDate } = useContext(SelectedDateContext);
+  const { todoData } = useContext(ToDoDataContext);
 
-  const toDosOnSelectedDate = data.filter((i) => {
-    const itemDate = new Date(i.date).toDateString();
-    return itemDate === selectedDate.toDateString();
-  });
-  console.log(toDosOnSelectedDate);
+  // const todoDataOnSelectedDate = todoData.filter((i) => {
+  //   const itemDate = new Date(i.date).toDateString();
+  //   return itemDate === selectedDate.toDateString();
+  // });
+
+  const todoDataOnSelectedDate = [
+    {
+      todo_id: 7,
+      user: '걸어봐위엄라이커라이온',
+      date: '2024-06-17T17:00:00.123456+09:00',
+      content: '멋사와 함께 행복하기',
+      is_checked: false,
+      emoji: '',
+    },
+  ];
+  console.log(todoDataOnSelectedDate);
 
   return (
     <StyledList>
       <div className="list-container">
         <ul>
-          {toDosOnSelectedDate.map((toDos) => (
+          {todoDataOnSelectedDate.map((todo) => (
             <ToDoItem
-              key={toDos.todo_id}
-              content={toDos.content}
-              emoji={toDos.emoji}
+              key={todo.todo_id}
+              id={todo.todo_id}
+              content={todo.content}
+              isChecked={todo.isChecked}
+              emoji={todo.emoji}
+              onGoToForm={onGoToForm}
             />
           ))}
         </ul>
@@ -34,122 +50,14 @@ const StyledList = styled.div`
   height: 100%;
   display: flex;
   justify-content: center;
-  margin-top: 1.1rem;
 
   & .list-container {
     display: flex;
     flex-direction: column;
-    width: 90%;
+    width: 100%;
+    border: none;
+    
   }
 `;
-
-/* & li {
-    display: flex;
-    align-items: center;
-
-    padding: 1rem 0rem;
-    border-bottom: 1px dashed black;
-  }
-
-  & .time {
-    width: 6.3rem;
-    display: flex;
-    justify-content: flex-end;
-  }
-
-  & .button-container {
-    width: 8rem;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  & .blue_button {
-    width: 3.6rem;
-    height: 2.3rem;
-    /* flex-shrink: 박스 안의 콘텐츠의 크기를 설정, 값이 클수록 콘텐츠가 차지하는 공간 줄어듬 */
-/* flex-shrink: 0;
-    border-radius: 1.875rem;
-    border: 6px solid #000;
-    background: #06c3ff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #000;
-    font-family: 'SeoulNamsanM';
-    font-size: 1rem;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-  } */
-
-/* & .white_button {
-    width: 3.6rem;
-    height: 2.3rem;
-    flex-shrink: 0;
-    border-radius: 1.875rem;
-    border: 6px solid #000;
-    background: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #000;
-    font-family: 'SeoulNamsanM';
-    font-size: 1rem;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-  } */
-
-/* & .white_button:hover {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1),
-      0 -4px 6px rgba(255, 255, 255, 0.1),
-      inset 0 4px 6px rgba(0, 0, 0, 0.2),
-      inset 0 -4px 6px rgba(255, 255, 255, 0.2);
-    border-radius: 1.875rem;
-    border: 6px solid #000;
-  }
-
-  & .blue_button:hover {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1),
-      0 -4px 6px rgba(255, 255, 255, 0.1),
-      inset 0 4px 6px rgba(0, 0, 0, 0.2),
-      inset 0 -4px 6px rgba(255, 255, 255, 0.2);
-    border-radius: 1.875rem;
-    border: 6px solid #000;
-  }  */
-
-// const StyledTimeSection = styled.div`
-//   width: 15rem;
-//   display: flex;
-//   justify-content: space-between;
-//   font-family: 'SeoulNamsanM';
-//   font-size: 1.4rem;
-//   font-weight: 600;
-
-//   & li {
-//     width: 100%;
-//     display: flex;
-//     justify-content: space-between;
-//     margin: 1.3rem 0rem;
-//   }
-
-//   & li .time {
-//     width: 6.3rem;
-//     display: flex;
-//     justify-content: flex-end;
-//   }
-// `;
-
-// const StyledContentSection = styled.div`
-//   padding-left: 5rem;
-//   padding-right: 1rem;
-//   width: 32rem;
-
-//   & .content {
-//     font-family: 'SeoulNamsanM';
-//     font-size: 1.4rem;
-//     font-weight: 600;
-//   }
-// `;
 
 export default ToDoList;
