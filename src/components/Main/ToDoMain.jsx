@@ -14,6 +14,7 @@ function ToDoMain() {
   function goToEdit(id) {
     setIsForEdit(true);
     setTargetId(id);
+    setFormRendered(true);
   }
 
   function finishEdit() {
@@ -118,8 +119,8 @@ const StyledMain = styled.div`
 const EmptyForm = styled.p`
   color: black;
   font-family: 'SeoulNamsanM';
-  font-size: 1.4rem;
-  font-weight: 500;
+  font-size: 1.6rem;
+  font-weight: 600;
   line-height: 2rem;
   display: flex;
   justify-content: center;

@@ -133,6 +133,10 @@ const StyledForm = styled.div`
     resize: none;
   }
 
+  & .todo-input:focus {
+    background-color: #bcf4f5;
+  }
+
   & .modal-actions {
     display: flex;
     justify-content: flex-end;

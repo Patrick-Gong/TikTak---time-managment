@@ -1,9 +1,26 @@
 import styled from 'styled-components';
 import ToDoDataContext from '../store/ToDoDataCtx';
 import ToDoIdContext from '../store/ToDoIdCtx';
-import { useContext, useRef, useState } from 'react';
+import { forwardRef, useContext, useRef, useState } from 'react';
+import hamburgerIcon from '../../assets/hamburger.png';
 
-function ToDoItem({ id, content, isChecked, emoji, onGoToForm }) {
+const ToDoItem = forwardRef(function(props, ref) {
+  const {
+    id,
+    content,
+    isChecked,
+    emoji,
+    onGoToForm,
+    draggableProps,
+    dragHandleProps,
+  } = props;
+
+  const [isSubFunctionRendered, setIsSubFunctionRendered] = useState(false);
+  
+
+  console.log("dragHandleProps:", dragHandleProps);
+  console.log(draggableProps);
+
   const emojiData = [
     { value: 1, emoji: '❤️' },
     { value: 2, emoji: '🤣' },
@@ -32,12 +49,20 @@ function ToDoItem({ id, content, isChecked, emoji, onGoToForm }) {
   };
 
   return (
-    <StyledListItem>
-      <StyledLabel htmlFor="checkTodo">
+    <StyledListItem
+      ref={ref}
+      {...draggableProps}
+      onMouseOver={() => setIsSubFunctionRendered(true)}
+      onMouseLeave={() =>
+        setIsSubFunctionRendered(false) && setIsDropDown(false)
+      }
+    >
+      
+      <StyledLabel htmlFor={`${id}`}>
         <input
           type="checkbox"
-          name="checkTodo"
-          id="checkTodo"
+          name={`${id}`}
+          id={`${id}`}
           ref={inputRef}
           checked={isChecked}
           onChange={handleCheckboxChange}
@@ -47,45 +72,55 @@ function ToDoItem({ id, content, isChecked, emoji, onGoToForm }) {
       <StyledContentSection>
         <p className="content">{content}</p>
       </StyledContentSection>
-      <StyledButtonContainer>
-        <button className="blue_button" onClick={() => onGoToForm(id)}>
-          수정
-        </button>
-        <button className="white_button" onClick={() => deleteToDo(id)}>
-          삭제
-        </button>
-      </StyledButtonContainer>
-      <StyledReviewButtonContainer>
-        <StyledSelectButton type="button" onClick={handleClickSelect}>
-          <StyledSelect isEmojiSelected={selectedEmoji !== ''}>
-            {selectedEmoji === '' ? '🧒' : selectedEmoji}
-          </StyledSelect>
-        </StyledSelectButton>
-        {isDropDown && (
-          <StyledDropDown>
-            {emojiData.map((option) => (
-              <StyledOption
-                value={option.emoji}
-                key={option.value}
-                onClick={handleClickOption}
-              >
-                {option.emoji}
-              </StyledOption>
-            ))}
-          </StyledDropDown>
-        )}
-      </StyledReviewButtonContainer>
+      {isSubFunctionRendered && (
+        <SubFunctionSection>
+          <StyledButtonContainer>
+            <button className="blue_button" onClick={() => onGoToForm(id)}>
+              수정
+            </button>
+            <button className="white_button" onClick={() => deleteToDo(id)}>
+              삭제
+            </button>
+          </StyledButtonContainer>
+          <StyledReviewButtonContainer>
+            <StyledSelectButton type="button" onClick={handleClickSelect}>
+              <StyledSelect isEmojiSelected={selectedEmoji !== ''}>
+                {selectedEmoji === '' ? '🧒' : selectedEmoji}
+              </StyledSelect>
+            </StyledSelectButton>
+            {isDropDown && (
+              <StyledDropDown>
+                {emojiData.map((option) => (
+                  <StyledOption
+                    value={option.emoji}
+                    key={option.value}
+                    onClick={handleClickOption}
+                  >
+                    {option.emoji}
+                  </StyledOption>
+                ))}
+              </StyledDropDown>
+            )}
+          </StyledReviewButtonContainer>
+        </SubFunctionSection>
+      )}
+      <DragButton type="button" {...dragHandleProps} style={{ cursor: 'grab' }}>
+        <img src={hamburgerIcon} alt="우선순위 버튼" />
+      </DragButton>
     </StyledListItem>
   );
-}
+})
 
 const StyledListItem = styled.li`
+  position: relative;
   display: flex;
   align-items: center;
   padding: 1rem 0rem;
   width: 100%;
+  height: 5rem;
   background-color: #d1b9f8;
   border-radius: 4px;
+  border-bottom: 2px solid black;
 `;
 
 const StyledLabel = styled.label`
@@ -154,7 +189,7 @@ const StyledLabel = styled.label`
 const StyledContentSection = styled.div`
   padding-left: 2rem;
   padding-right: 1rem;
-  width: 38rem;
+  width: 34rem;
 
   & .content {
     font-family: 'SeoulNamsanM';
@@ -166,7 +201,20 @@ const StyledContentSection = styled.div`
   }
 `;
 
-const StyledButtonContainer = styled.p`
+const SubFunctionSection = styled.div`
+  display: flex;
+  @keyframes dropdown {
+    0% {
+      transform: translateX(-10%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  animation: dropdown 0.4s ease-out;
+`;
+
+const StyledButtonContainer = styled.div`
   width: 8rem;
   display: flex;
   justify-content: space-between;
@@ -244,6 +292,10 @@ const StyledSelectButton = styled.button`
   outline: none;
   cursor: pointer;
   z-index: 1;
+
+  &:hover {
+    background-color: #eeeded;
+  }
 `;
 
 // 초기 버튼 속 컨테이너
@@ -290,7 +342,21 @@ const StyledOption = styled.button`
   background: none;
   border: none;
   &:hover {
+    background-color: #eeeded;
   }
 `;
+
+const DragButton = styled.button`
+  position: absolute;
+  left: 95%;
+  outline: none;
+  border: none;
+  background: none;
+
+  & img {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+`
 
 export default ToDoItem;
