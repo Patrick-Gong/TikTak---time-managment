@@ -1,28 +1,26 @@
+import { useContext } from 'react';
+
 import './reset.css';
-import GlobalStyles from '../GlobalStyles';
-import Login from './components/Landing/Login';
-import SignUp from './components/Landing/SignUp';
-import ToDoMain from './components/Main/ToDoMain';
-import { useState } from 'react';
+import GlobalStyles from './GlobalStyles';
+import { UserIdContextProvider } from './components/store/UserIdCtx';
+import { Outlet } from 'react-router-dom';
+import { SelectedDateContextProvider } from './components/store/SelectedDateCtx';
+import { ToDoIdContextProvider } from './components/store/ToDoIdCtx';
+import { ToDoDataContextProvider } from './components/store/ToDoDataCtx';
 
 function App() {
-  const [isEntered, setIsEntered] = useState(false);
-  const [toSignUp, setToSignUp] = useState(false);
-
-  function handleLogin() {
-    setIsEntered(true);
-  }
-
-  function handleSignUp() {
-    setToSignUp(true);
-  }
-
   return (
     <>
-      <GlobalStyles />
-      {!isEntered && <Login onEnter={handleLogin} onSignUp={handleSignUp} />}
-      {toSignUp && !isEntered && <SignUp />}
-      {isEntered && <ToDoMain />}
+      <UserIdContextProvider>
+        <SelectedDateContextProvider>
+          <ToDoIdContextProvider>
+            <ToDoDataContextProvider>
+              <GlobalStyles />
+              <Outlet />
+            </ToDoDataContextProvider>
+          </ToDoIdContextProvider>
+        </SelectedDateContextProvider>
+      </UserIdContextProvider>
     </>
   );
 }

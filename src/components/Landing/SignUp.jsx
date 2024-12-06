@@ -1,18 +1,63 @@
 import styled from 'styled-components';
+import { useRef } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function SignUp() {
+  const username = useRef('');
+  const password = useRef('');
+
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+  const navigate = useNavigate();
+
+  const postSignUp = async (signUpData) => {
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/api/users/register`,
+        signUpData
+      );
+      if (response.status === 200) {
+        navigate('/');
+        alert(response.data.detail);
+      }
+    } catch (error) {
+      console.log('회원가입에 실패했습니다 다시 시도해주세요');
+    }
+  };
+
+  function handleSignUp(event) {
+    event.preventDefault();
+    const signUpData = {
+      username: username.current.value,
+      password: password.current.value,
+    };
+    console.log(signUpData);
+    postSignUp(signUpData);
+  }
+
+  function handleCancel(event) {
+    event.preventDefault();
+    navigate('/');
+  }
+
   return (
     <StyledSignUp>
       <div className="signUp-box">
-        <form action="">
+        <form onSubmit={handleSignUp}>
           <div className="input-box-container">
             <div className="input-box">
               <label htmlFor="id">아이디</label>
-              <input type="text" id="id" name="id" />
+              <input type="text" id="id" name="username" ref={username} />
             </div>
             <div className="input-box">
               <label htmlFor="password">비밀번호</label>
-              <input type="password" id="password" name="password" />
+              <input
+                type="password"
+                id="password"
+                name="password"
+                ref={password}
+              />
             </div>
             <div className="input-box">
               <label htmlFor="tel">전화번호</label>
@@ -25,8 +70,16 @@ function SignUp() {
           </div>
           <div className="form-actions-container">
             <p className="form-actions">
-              <button className="blue_button">회원가입</button>
-              <button className="white_button">취소</button>
+              <button className="blue_button" type="submit">
+                회원가입
+              </button>
+              <button
+                className="white_button"
+                type="button"
+                onClick={handleCancel}
+              >
+                취소
+              </button>
             </p>
           </div>
         </form>

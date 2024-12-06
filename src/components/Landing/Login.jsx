@@ -1,33 +1,90 @@
 import styled from 'styled-components';
 import TikTakCI from '../../assets/TikTakCi.png';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useContext, useRef } from 'react';
+import UserIdContext from '../store/UserIdCtx';
 
-function Login({onEnter, onSignUp}) {
+function Login() {
+  const username = useRef('');
+  const password = useRef('');
+  const { checkUserId } = useContext(UserIdContext);
+
+  const navigate = useNavigate();
+
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+  const postLogin = async (loginData) => {
+    console.log(loginData);
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/api/users/login`,
+        loginData
+      );
+
+      const userId = response.data.user_id;
+      checkUserId(userId);
+      if (response.status === 200 && typeof userId === 'number') {
+        navigate(`/main/${userId}`);
+        alert('로그인 성공!!');
+      } else {
+        alert('로그인에 실패했습니다. 다시 시도해주세요.');
+      }
+
+      console.log(response.data);
+    } catch (error) {
+      alert('로그인에 실패했습니다. 다시 시도해주세요');
+    }
+  };
+
+  function handleLogin(event) {
+    event.preventDefault();
+    const loginData = {
+      username: username.current.value,
+      password: password.current.value,
+    };
+    console.log(loginData);
+    postLogin(loginData);
+  }
+
+  function handleGoToSignUp() {
+    navigate('/signUp');
+  }
+
   return (
     <StyledLogin>
       <div className="login-container">
         <img src={TikTakCI} alt="TIK_TAK" />
-        <form action="">
+        <form onSubmit={handleLogin}>
           <div className="input-box-container">
             <input
               className="input-box"
               type="text"
               id="id"
+              name="userName"
               placeholder="아이디를 입력해주세요."
+              ref={username}
             />
 
             <input
               className="input-box"
               type="password"
               id="password"
+              name="password"
               placeholder="비밀번호를 입력해주세요."
+              ref={password}
             />
           </div>
 
-          <button className="blue_button" onClick={onEnter}>LOG IN</button>
+          <button className="blue_button" type="submit">
+            LOG IN
+          </button>
 
           <p className="form-actions">
-            <button className="row_button" onClick={onSignUp}>회원가입</button>
-            <button className="row_button">아이디 찾기</button>
+            <button className="row_button" type='button' onClick={handleGoToSignUp}>
+              회원가입
+            </button>
+            <button className="row_button" type='button'>아이디 찾기</button>
           </p>
         </form>
       </div>
@@ -127,7 +184,7 @@ const StyledLogin = styled.div`
   & .form-actions {
     display: flex;
     margin-top: 4.19rem;
-    width: 15.69rem;  
+    width: 15.69rem;
     justify-content: space-between;
   }
 
@@ -144,6 +201,6 @@ const StyledLogin = styled.div`
   }
 
   & .row_button:hover {
-    color: #5C5D8D;
+    color: #5c5d8d;
   }
 `;

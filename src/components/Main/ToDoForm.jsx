@@ -1,42 +1,76 @@
 import styled from 'styled-components';
 import clockImage from '../../assets/TikTak_clock.png';
 import addImage from '../../assets/TikTak_add.png';
+import { useContext, useRef, useEffect } from 'react';
+import ToDoDataContext from '../store/ToDoDataCtx';
+import SelectedDateContext from '../store/SelectedDateCtx';
 
-function ToDoForm() {
+function ToDoForm({ isForEdit, targetId, onFinish }) {
+  const { addToDo, editToDo } = useContext(ToDoDataContext);
+  const { selectedDate } = useContext(SelectedDateContext);
+  const textareaRef = useRef();
+
+  useEffect(() => {
+    console.log('selectedDate updated:', selectedDate);
+  }, [selectedDate]);
+  
+
+  const getKoreanDay = (date) => {
+    const daysInKorean = [
+      '일요일',
+      '월요일',
+      '화요일',
+      '수요일',
+      '목요일',
+      '금요일',
+      '토요일',
+    ];
+    return daysInKorean[date.getDay()];
+  };
+
+  useEffect(() => {
+    if (isForEdit && textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [isForEdit]);
+
   return (
     <StyledForm>
       <div className="todoForm-container">
-        <div className="time-input-wrapper">
+        <div className="date-wrapper">
           <img src={clockImage} alt="clock" />
-          <div className="time-input">
-            <div className="custom-select-wrapper">
-              <select className="custom-select" name="" id="">
-                <option value="1">오전 12:00</option>
-              </select>
-            </div>
-            ~
-            <div className="custom-select-wrapper">
-              <select className="custom-select" name="" id="">
-                <option value="1">오후 12:00</option>
-              </select>
-            </div>
-          </div>
+          <p className="date">
+            {`${selectedDate.getFullYear()}년 ${selectedDate.getMonth()}월 ${selectedDate.getDate()}일 ${getKoreanDay(
+              selectedDate
+            )}`}
+          </p>
         </div>
         <hr />
         <div className="todo-input-wrapper">
-          <label htmlFor="todo">
+          <label htmlFor="todoBox">
             <img src={addImage} alt="add" />
           </label>
           <textarea
             type="text"
-            id="todo"
+            id="todoBox"
             name="todo"
             className="todo-input"
             placeholder="할 일을 추가해보세요!"
+            ref={textareaRef}
           />
         </div>
         <p className="modal-actions">
-          <button className="blue_button">추가하기</button>
+          <button
+            className="blue_button"
+            onClick={
+              !isForEdit
+                ? () => addToDo(textareaRef.current.value)
+                : () =>
+                    editToDo(targetId, textareaRef.current.value) && onFinish()
+            }
+          >
+            추가하기
+          </button>
           <button className="white_button">취소</button>
         </p>
       </div>
@@ -55,38 +89,20 @@ const StyledForm = styled.div`
     width: 90%;
   }
 
-  & .time-input-wrapper {
-    width: 100%;
+  & .date-wrapper {
     display: flex;
     align-items: center;
   }
 
-  & .time-input-wrapper img {
+  & .date {
+    margin-left: 1.2rem;
+    font-family: 'SeoulNamsanM';
+    font-weight: 600;
+  }
+
+  & .date-wrapper img {
     width: 1.7rem;
     height: 1.7rem;
-  }
-
-  & .time-input {
-    margin-left: 1.5rem;
-    width: 80%;
-    display: flex;
-    gap: 0.6rem;
-    align-items: center;
-  }
-
-  & .custom-select:focus {
-    background-color: #bcf4f5;
-  }
-
-  & .custom-select {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-color: transparent;
-    border: none;
-    font-size: 1rem;
-    font-weight: 600;
-    padding: 0.5rem;
   }
 
   & hr {
@@ -114,6 +130,11 @@ const StyledForm = styled.div`
     font-family: 'SeoulNamsanM';
     font-size: 1rem;
     font-weight: 400;
+    resize: none;
+  }
+
+  & .todo-input:focus {
+    background-color: #bcf4f5;
   }
 
   & .modal-actions {
